@@ -1,5 +1,5 @@
 # GoogleForms-JS
-JS for data submission to Google Forms.
+Lightweight JS Class for data submission to Google Forms. Allows for your own custom HTML forms.
 
 ## Usage
 
@@ -87,7 +87,7 @@ GForm.quickSubmit({
 | --- | --- | --- | --- |
 | name | ✔ | string | The name of the question |
 | entry | ✔ | string | The form entry ID to the question |
-| answer | ✗ | list | Default answer to the question |
+| answer | ❌ | list | Default answer to the question |
 
 Example:
 ```
