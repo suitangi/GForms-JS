@@ -5,10 +5,11 @@ Lightweight JS Class for data submission to Google Forms. Allows for your own cu
 
 ### Setting up Google Forms
 1. Create a new [Google Form](https://docs.google.com/forms/u/0/)
-2. Add the questions you want, make sure they are `Short Answer` or `Paragraph`
+2. Add the questions you want (any question type works)
 3. Go to Settings > Responses and make sure "Collect email address" and "Allow response editing" are both turned off.
 4. Go to Settings > Presentations and make sure "Disable autosave for all respondents" is turned on.
-5. Preview your form and run the script to generate the formInput.
+5. **Get a prefilled link**: Click the 3-dots menu → "Get pre-filled link" → Fill out the form → Click "Get link" → Copy the link (see [How to extract formInput data →](FormInput.md))
+6. Use our [testing interface](index.html) to generate the formInput from your prefilled link!
 
 ### Using GForms.js
 
@@ -63,8 +64,9 @@ GForm.quickSubmit({
 ```
 
 ## Notes
-- This is not a UI library, the point of this project is to provide easy utility to submit to Google forms while letting devs use their own user interface.
+- This is not a UI library, the point of this project is to provide easy utility to submit to Google forms while letting developers use their own user interface.
 - This project does not provide any data validation, and does not support using data validation natively in Google Forms, you'll need to validate your users' inputs and give feedback separately.
+- Importantly, related to the above point: I recommend **only using text questions** in your Google forms as that allows you to submit virtually any string. You'll get a 400 error if you submit answers in the incorrect format for many other question types (ie dropdown, multiple choice, date etc. ) This library does not do that validation for you either.
 
 
 ## Options and Methods

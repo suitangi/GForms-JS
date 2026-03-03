@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GForms.js Generator & Tester</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0f0f23;
+            --bg-secondary: #1a1a35;
+            --bg-tertiary: #262647;
+            --accent-primary: #00cc88;
+            --accent-secondary: #0099cc;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --text-muted: #999999;
+            --border: #333366;
+            --error: #ff4757;
+            --success: #2ed573;
+            --warning: #ffa502;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        @media (max-width: 1024px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px var(--shadow);
+        }
+
+        .card h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(0, 204, 136, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 200px;
+            font-family: 'Fira Code', 'Monaco', 'Cascadia Code', monospace;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            resize: vertical;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 204, 136, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+            color: var(--text-primary);
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .status {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-weight: 500;
+            display: none;
+        }
+
+        .status.success {
+            background: rgba(46, 213, 115, 0.1);
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+
+        .status.error {
+            background: rgba(255, 71, 87, 0.1);
+            border: 1px solid var(--error);
+            color: var(--error);
+        }
+
+        .status.warning {
+            background: rgba(255, 165, 2, 0.1);
+            border: 1px solid var(--warning);
+            color: var(--warning);
+        }
+
+        .form-preview {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .form-field {
+            margin-bottom: 1rem;
+        }
+
+        .form-field label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .form-field input,
+        .form-field select,
+        .form-field textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .form-field input:focus,
+        .form-field select:focus,
+        .form-field textarea:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .form-meta {
+            background: var(--bg-primary);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .form-meta h3 {
+            color: var(--accent-primary);
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .form-meta p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin: 0;
+        }
+
+        .link-example {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .link-example code {
+            background: var(--bg-primary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            color: var(--accent-primary);
+            font-family: monospace;
+        }
+
+        .help-link {
+            color: var(--accent-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            display: inline-block;
+        }
+
+        .help-link:hover {
+            text-decoration: underline;
+        }
+
+        .json-editor {
+            position: relative;
+        }
+
+        .json-validation {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--error);
+        }
+
+        .json-validation.valid {
+            background: var(--success);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease;
+        }
+    </style>
+    <script src="./gforms.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>GForms.js Generator & Tester</h1>
+            <p>Generate formInput from Google Forms prefilled links and test your integration with a sleek, modern interface</p>
+        </div>
+
+        <div class="main-layout">
+            <div class="card">
+                <h2>FormInput Generator</h2>
+                
+                <div class="form-group">
+                    <label class="form-label">Google Forms Prefilled Link</label>
+                    <div class="link-example">
+                        Paste your prefilled link here. To get one: Open your form editor → <code>⋮</code> menu → <code>Get pre-filled link</code> → Fill out form → <code>Get link</code>
+                    </div>
+                    <textarea 
+                        id="prefilledLinkInput" 
+                        class="form-input form-textarea"
+                        placeholder="https://docs.google.com/forms/d/e/1FAIpQLSe.../viewform?usp=pp_url&entry.123=Answer1&entry.456=Answer2"
+                        rows="3"
+                    ></textarea>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn" onclick="generateFromPrefilledLink()">Generate FormInput</button>
+                    <button class="btn btn-secondary" onclick="loadPrefilledExample()">Load Example</button>
+                </div>
+
+                <div id="status" class="status"></div>
+
+                <div class="form-group">
+                    <label class="form-label">Generated FormInput JSON</label>
+                    <div class="json-editor">
+                        <textarea 
+                            id="jsonInput" 
+                            class="form-input form-textarea"
+                            placeholder="Your formInput JSON will appear here, or paste your own..."
+                            rows="12"
+                        ></textarea>
+                        <div id="jsonValidation" class="json-validation"></div>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn" onclick="generateForm()">Generate Form</button>
+                    <button class="btn btn-secondary" onclick="loadExampleJson()">Load Example JSON</button>
+                </div>
+
+                <a href="FormInput.md" class="help-link" target="_blank">How to get prefilled links</a>
+            </div>
+
+            <div class="card">
+                <h2>Form Preview & Testing</h2>
+                
+                <div id="formPreview">
+                    <div class="form-meta">
+                        <h3>No Form Generated</h3>
+                        <p>Generate a form from your formInput JSON to see the preview and test submission</p>
+                    </div>
+                </div>
+
+                <div id="testForm" style="display: none;">
+                    <div class="btn-group">
+                        <button class="btn" onclick="testSubmission()">Test Submission</button>
+                        <button class="btn btn-secondary" onclick="clearForm()">Clear Form</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentFormInput = null;
+        let currentGForm = null;
+
+        function showStatus(message, type = 'error') {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+            status.style.display = 'block';
+            
+            setTimeout(() => {
+                status.style.display = 'none';
+            }, 5000);
+        }
+
+        function validateJSON(jsonString) {
+            try {
+                const parsed = JSON.parse(jsonString);
+                
+                if (!parsed.name || !parsed.action || !parsed.questions) {
+                    throw new Error('Missing required fields: name, action, or questions');
+                }
+                
+                if (!Array.isArray(parsed.questions) || parsed.questions.length === 0) {
+                    throw new Error('Questions array is empty or invalid');
+                }
+                
+                parsed.questions.forEach((q, index) => {
+                    if (!q.name || !q.entry) {
+                        throw new Error(`Question ${index + 1} is missing name or entry field`);
+                    }
+                });
+                
+                return { valid: true, data: parsed };
+            } catch (error) {
+                return { valid: false, error: error.message };
+            }
+        }
+
+        function updateJSONValidation() {
+            const jsonInput = document.getElementById('jsonInput');
+            const validation = document.getElementById('jsonValidation');
+            const result = validateJSON(jsonInput.value.trim());
+            
+            validation.className = result.valid ? 'json-validation valid' : 'json-validation';
+            
+            if (result.valid) {
+                currentFormInput = result.data;
+            }
+        }
+
+        function loadPrefilledExample() {
+            const exampleLink = 'https://docs.google.com/forms/d/e/1FAIpQLSeUoqP34ksUDG9dTr_liOADypmGdBDOdHN6Gi0eDpyZb0kVPw/viewform?usp=pp_url&entry.1301830845=Sample+Answer+1&entry.369586431=Sample+Answer+2&entry.1546868024=Option+1';
+            document.getElementById('prefilledLinkInput').value = exampleLink;
+        }
+
+        function generateFromPrefilledLink() {
+            const linkInput = document.getElementById('prefilledLinkInput').value.trim();
+            
+            if (!linkInput) {
+                showStatus('Please enter a prefilled link');
+                return;
+            }
+
+            try {
+                const url = new URL(linkInput);
+                
+                if (!url.hostname.includes('docs.google.com') || !url.pathname.includes('/forms/')) {
+                    throw new Error('This doesn\'t appear to be a Google Forms URL');
+                }
+
+                const pathMatch = url.pathname.match(/\/forms\/d\/e\/([a-zA-Z0-9-_]+)\//);
+                if (!pathMatch) {
+                    throw new Error('Could not extract form ID from URL');
+                }
+
+                const formId = pathMatch[1];
+                const actionUrl = `https://docs.google.com/forms/u/0/d/e/${formId}/formResponse`;
+
+                const questions = [];
+                let questionNumber = 1;
+
+                for (const [key, value] of url.searchParams) {
+                    if (key.startsWith('entry.')) {
+                        const entryId = key.replace('entry.', '');
+                        questions.push({
+                            name: `Question ${questionNumber}`,
+                            entry: entryId
+                        });
+                        questionNumber++;
+                    }
+                }
+
+                if (questions.length === 0) {
+                    throw new Error('No entry parameters found in the URL. Make sure you generated a prefilled link with all questions answered.');
+                }
+
+                const formInput = {
+                    name: 'extractedForm',
+                    action: actionUrl,
+                    questions: questions
+                };
+
+                document.getElementById('jsonInput').value = JSON.stringify(formInput, null, 2);
+                updateJSONValidation();
+                showStatus(`Generated formInput with ${questions.length} questions`, 'success');
+                
+            } catch (error) {
+                showStatus(`Error: ${error.message}`);
+            }
+        }
+
+        function loadExampleJson() {
+            const example = {
+                name: 'testForm',
+                action: 'https://docs.google.com/forms/u/0/d/e/1FAIpQLSeUoqP34ksUDG9dTr_liOADypmGdBDOdHN6Gi0eDpyZb0kVPw/formResponse',
+                questions: [
+                    { name: 'Full Name', entry: '1301830845' },
+                    { name: 'Email Address', entry: '369586431' },
+                    { name: 'Favorite Color', entry: '1546868024' },
+                    { name: 'Message', entry: '1743654178' }
+                ]
+            };
+            
+            document.getElementById('jsonInput').value = JSON.stringify(example, null, 2);
+            updateJSONValidation();
+        }
+
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+        function generateForm() {
+            const jsonInput = document.getElementById('jsonInput').value.trim();
+            
+            if (!jsonInput) {
+                showStatus('Please enter formInput JSON');
+                return;
+            }
+
+            const result = validateJSON(jsonInput);
+            if (!result.valid) {
+                showStatus(`JSON Error: ${result.error}`);
+                return;
+            }
+
+            currentFormInput = result.data;
+
+            // Generate form preview
+            let html = `
+                <div class="form-meta">
+                    <h3>${escapeHtml(currentFormInput.name)}</h3>
+                    <p>Action: ${escapeHtml(currentFormInput.action)}</p>
+                </div>
+                <div class="form-preview">
+            `;
+
+            currentFormInput.questions.forEach((question, index) => {
+                const inputType = question.name.toLowerCase().includes('message') || 
+                                question.name.toLowerCase().includes('comment') || 
+                                question.name.toLowerCase().includes('description') ||
+                                question.name.toLowerCase().includes('feedback') ||
+                                question.name.toLowerCase().includes('notes') ? 'textarea' : 'input';
+                
+                const isSelect = question.name.toLowerCase().includes('select') ||
+                               question.name.toLowerCase().includes('choose') ||
+                               question.name.toLowerCase().includes('pick') ||
+                               question.name.toLowerCase().includes('favorite') ||
+                               question.name.toLowerCase().includes('color') ||
+                               question.name.toLowerCase().includes('option');
+                
+                if (isSelect) {
+                    html += `
+                        <div class="form-field">
+                            <label for="test_${index}">${escapeHtml(question.name)}</label>
+                            <select id="test_${index}">
+                                <option value="">Choose an option...</option>
+                                <option value="Option 1">Option 1</option>
+                                <option value="Option 2">Option 2</option>
+                                <option value="Option 3">Option 3</option>
+                            </select>
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div class="form-field">
+                            <label for="test_${index}">${escapeHtml(question.name)}</label>
+                            ${inputType === 'textarea' 
+                                ? `<textarea id="test_${index}" rows="3" placeholder="Enter your ${question.name.toLowerCase()}"></textarea>`
+                                : `<input type="text" id="test_${index}" placeholder="Enter your ${question.name.toLowerCase()}">`
+                            }
+                        </div>
+                    `;
+                }
+            });
+
+            html += `</div>`;
+
+            document.getElementById('formPreview').innerHTML = html;
+            document.getElementById('testForm').style.display = 'block';
+            showStatus('Form generated successfully', 'success');
+        }
+
+        function testSubmission() {
+            if (!currentFormInput) {
+                showStatus('No form available to test');
+                return;
+            }
+
+            try {
+                // Clean up previous form
+                if (currentGForm) {
+                    currentGForm.destroy();
+                }
+
+                // Create new form
+                currentGForm = new GForm(currentFormInput);
+                
+                // Set answers from form inputs
+                currentFormInput.questions.forEach((question, index) => {
+                    const element = document.getElementById(`test_${index}`);
+                    if (element && element.value.trim()) {
+                        currentGForm.setAnswer(question.name, element.value.trim());
+                    } else {
+                        currentGForm.setAnswer(question.name, `Test ${question.name}`);
+                    }
+                });
+
+                showStatus('Submitting form...', 'warning');
+
+                // Submit with callbacks
+                currentGForm.submit(
+                    () => {
+                        showStatus('Form submitted successfully! Check your Google Form responses.', 'success');
+                    },
+                    (error) => {
+                        showStatus(`Submission failed: ${error.message}`);
+                    }
+                );
+
+            } catch (error) {
+                showStatus(`Error: ${error.message}`);
+            }
+        }
+
+        function clearForm() {
+            if (!currentFormInput) return;
+            
+            currentFormInput.questions.forEach((question, index) => {
+                const element = document.getElementById(`test_${index}`);
+                if (element) {
+                    element.value = '';
+                }
+            });
+            showStatus('Form cleared', 'success');
+        }
+
+        // Auto-validate JSON as user types
+        document.getElementById('jsonInput').addEventListener('input', updateJSONValidation);
+
+        // Initialize
+        updateJSONValidation();
+    </script>
+</body>
+</html>
