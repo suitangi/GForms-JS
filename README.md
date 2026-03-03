@@ -5,7 +5,7 @@ Lightweight JS Class for data submission to Google Forms. Allows for your own cu
 
 ### Setting up Google Forms
 1. Create a new [Google Form](https://docs.google.com/forms/u/0/)
-2. Add the questions you want (any question type works)
+2. Add the questions you want (highly recommend just sticking with all "text" types)
 3. Go to Settings > Responses and make sure "Collect email address" and "Allow response editing" are both turned off.
 4. Go to Settings > Presentations and make sure "Disable autosave for all respondents" is turned on.
 5. **Get a prefilled link**: Click the 3-dots menu → "Get pre-filled link" → Fill out the form → Click "Get link" → Copy the link (see [How to extract formInput data →](FormInput.md))
