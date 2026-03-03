@@ -9,7 +9,7 @@ Lightweight JS Class for data submission to Google Forms. Allows for your own cu
 3. Go to Settings > Responses and make sure "Collect email address" and "Allow response editing" are both turned off.
 4. Go to Settings > Presentations and make sure "Disable autosave for all respondents" is turned on.
 5. **Get a prefilled link**: Click the 3-dots menu → "Get pre-filled link" → Fill out the form → Click "Get link" → Copy the link (see [How to extract formInput data →](FormInput.md))
-6. Use our [testing interface](index.html) to generate the formInput from your prefilled link!
+6. Use our [testing interface](suitangi.github.io/GForms-JS/) to generate the formInput from your prefilled link!
 
 ### Using GForms.js
 
